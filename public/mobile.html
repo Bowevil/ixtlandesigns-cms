@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobile CMS - Ixtlan Designs</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      color: #333;
+      font-weight: 600;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      min-height: 200px;
+      resize: vertical;
+    }
+
+    .tags-input {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .tags-input input {
+      flex: 1;
+    }
+
+    .tag-hint {
+      font-size: 12px;
+      color: #666;
+      font-style: italic;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 30px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .result.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 2px solid #10b981;
+      display: block;
+    }
+
+    .result.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 2px solid #ef4444;
+      display: block;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 Create Blog Post</h1>
+    <div class="subtitle">Mobile-friendly content creation</div>
+
+    <form id="postForm">
+      <label for="title">Title *</label>
+      <input
+        type="text"
+        id="title"
+        placeholder="e.g., Getting Started with Web Design"
+        required
+      >
+
+      <label for="slug">URL Slug *</label>
+      <input
+        type="text"
+        id="slug"
+        placeholder="e.g., getting-started-web-design"
+        required
+      >
+
+      <label for="description">Description</label>
+      <input
+        type="text"
+        id="description"
+        placeholder="Brief summary of the post"
+      >
+
+      <label for="content">Content *</label>
+      <textarea
+        id="content"
+        placeholder="Write your blog post content here..."
+        required
+      ></textarea>
+
+      <label for="tags">Tags</label>
+      <div class="tags-input">
+        <input
+          type="text"
+          id="tags"
+          placeholder="e.g., web-design, cms, tutorial"
+        >
+      </div>
+      <div class="tag-hint">Separate tags with commas</div>
+
+      <button type="submit" id="submitBtn">
+        🚀 Publish Post
+      </button>
+    </form>
+
+    <div id="result" class="result"></div>
+
+    <a href="/admin" class="back-link">← Back to Admin</a>
+  </div>
+
+  <script>
+    // Auto-generate slug from title
+    document.getElementById('title').addEventListener('input', (e) => {
+      const slug = e.target.value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+      document.getElementById('slug').value = slug;
+    });
+
+    document.getElementById('postForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      const resultDiv = document.getElementById('result');
+
+      // Disable button during submission
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Publishing...';
+
+      try {
+        // Parse tags
+        const tagsInput = document.getElementById('tags').value;
+        const tags = tagsInput
+          ? tagsInput.split(',').map(t => t.trim()).filter(t => t)
+          : [];
+
+        // Create post object
+        const post = {
+          title: document.getElementById('title').value,
+          slug: document.getElementById('slug').value,
+          date: new Date().toISOString().split('T')[0],
+          description: document.getElementById('description').value || '',
+          content: [
+            {
+              type: 'paragraph',
+              children: [
+                { text: document.getElementById('content').value }
+              ]
+            }
+          ],
+          tags: tags,
+          published: true,
+          source: 'mobile'
+        };
+
+        // Submit to API
+        const response = await fetch('/api/blog-posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(post)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to publish post');
+        }
+
+        const result = await response.json();
+
+        // Show success message
+        resultDiv.className = 'result success';
+        resultDiv.innerHTML = `
+          ✅ <strong>Post published successfully!</strong><br>
+          <small>Run <code>npm run fetch-content</code> on your laptop to sync to Hugo</small>
+        `;
+
+        // Reset form
+        e.target.reset();
+
+      } catch (error) {
+        // Show error message
+        resultDiv.className = 'result error';
+        resultDiv.innerHTML = `
+          ❌ <strong>Error:</strong> ${error.message}<br>
+          <small>Make sure the CMS server is running</small>
+        `;
+      } finally {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🚀 Publish Post';
+      }
+    });
+  </script>
+</body>
+</html>

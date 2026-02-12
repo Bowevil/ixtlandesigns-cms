@@ -1,0 +1,23 @@
+{
+  "name": "ixtlandesigns-cms",
+  "version": "1.0.0",
+  "description": "Payload CMS for Ixtlan Designs",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "node src/express-cms.js",
+    "build": "tsc",
+    "start": "node src/express-cms.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "mongodb": "^7.1.0",
+    "payload": "^3.76.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
