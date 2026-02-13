@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ixtlan Designs CMS Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: #1e293b;
+      border-right: 1px solid #334155;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #38bdf8;
+    }
+
+    .nav-menu {
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: 8px;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 12px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .nav-link:hover {
+      background: #334155;
+      color: #f1f5f9;
+    }
+
+    .nav-link.active {
+      background: #0ea5e9;
+      color: white;
+      border-color: #0284c7;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 30px;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="date"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 200px;
+    }
+
+    .editor {
+      border: 1px solid #334155;
+      border-radius: 6px;
+      background: #0f172a;
+      min-height: 300px;
+      color: #e2e8f0;
+    }
+
+    .editor-toolbar {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 8px;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .editor-btn {
+      background: #334155;
+      color: #cbd5e1;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .editor-btn:hover {
+      background: #475569;
+      color: #f1f5f9;
+    }
+
+    .editor-content {
+      padding: 15px;
+      outline: none;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #0ea5e9;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0284c7;
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Lists */
+    .item-list {
+      display: grid;
+      gap: 15px;
+    }
+
+    .item-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+
+    .item-card:hover {
+      border-color: #0ea5e9;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+
+    .item-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .item-meta {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 5px;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .item-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #1e293b;
+      border-radius: 8px;
+      padding: 30px;
+      max-width: 900px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid #334155;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 15px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #cbd5e1;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: #f1f5f9;
+    }
+
+    /* Status Badge */
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-published {
+      background: #10b981;
+      color: white;
+    }
+
+    .badge-draft {
+      background: #f59e0b;
+      color: white;
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert.active {
+      display: block;
+    }
+
+    .alert-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .alert-error {
+      background: #ef4444;
+      color: white;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .tag-input {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+    }
+
+    .tag {
+      background: #0ea5e9;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tag-input input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      min-width: 100px;
+      padding: 4px;
+      color: #e2e8f0;
+    }
+
+    .tag-input input:focus {
+      outline: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #94a3b8;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #334155;
+      border-top-color: #0ea5e9;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">🎨 Ixtlan CMS</div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <div class="nav-link active" data-section="blog-posts">
+            📝 Blog Posts
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-section="case-studies">
+            📊 Case Studies
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-section="resources">
+            📚 Resources
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="nav-link" data-section="media">
+            🖼️ Media Library
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div class="header">
+        <h1 id="section-title">Blog Posts</h1>
+        <button class="btn btn-primary" id="new-btn">+ New</button>
+      </div>
+
+      <div class="content">
+        <div id="alert" class="alert"></div>
+
+        <!-- Blog Posts Section -->
+        <div id="blog-posts" class="section active">
+          <div id="blog-list" class="item-list"></div>
+        </div>
+
+        <!-- Case Studies Section -->
+        <div id="case-studies" class="section">
+          <div id="case-list" class="item-list"></div>
+        </div>
+
+        <!-- Resources Section -->
+        <div id="resources" class="section">
+          <div id="resources-list" class="item-list"></div>
+        </div>
+
+        <!-- Media Section -->
+        <div id="media" class="section">
+          <div id="media-list" class="item-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Item</h2>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <form id="editForm"></form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    let currentSection = 'blog-posts';
+    let editingId = null;
+
+    // Navigation
+    document.querySelectorAll('[data-section]').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('[data-section]').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        currentSection = link.dataset.section;
+        loadSection();
+        updateHeader();
+      });
+    });
+
+    function updateHeader() {
+      const titles = {
+        'blog-posts': 'Blog Posts',
+        'case-studies': 'Case Studies',
+        'resources': 'Resources',
+        'media': 'Media Library'
+      };
+      document.getElementById('section-title').textContent = titles[currentSection];
+    }
+
+    // Load Section
+    async function loadSection() {
+      const collections = {
+        'blog-posts': { endpoint: 'blog-posts', list: 'blog-list' },
+        'case-studies': { endpoint: 'case-studies', list: 'case-list' },
+        'resources': { endpoint: 'resources', list: 'resources-list' },
+        'media': { endpoint: 'media', list: 'media-list' }
+      };
+
+      const config = collections[currentSection];
+
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      // Show current section
+      document.getElementById(currentSection).classList.add('active');
+
+      try {
+        const url = currentSection === 'media'
+          ? `${API_URL}/${config.endpoint}`
+          : `${API_URL}/${config.endpoint}?admin=true`;
+        const response = await fetch(url);
+        const data = await response.json();
+        displayItems(data.docs || [], config.list, currentSection);
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error loading content', 'error');
+      }
+    }
+
+    function displayItems(items, listId, type) {
+      const list = document.getElementById(listId);
+      if (items.length === 0) {
+        list.innerHTML = '<p style="color: #94a3b8;">No items yet. Create one!</p>';
+        return;
+      }
+
+      // Special handling for media
+      if (type === 'media') {
+        list.innerHTML = `
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 2px solid #334155;">
+                <th style="text-align: left; padding: 12px; color: #cbd5e1;">Filename</th>
+                <th style="text-align: left; padding: 12px; color: #cbd5e1;">Alt Text</th>
+                <th style="text-align: right; padding: 12px; color: #cbd5e1;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${items.map(item => `
+                <tr style="border-bottom: 1px solid #334155;">
+                  <td style="padding: 12px;">${item.filename || 'Untitled'}</td>
+                  <td style="padding: 12px; color: #94a3b8;">${item.alt || '-'}</td>
+                  <td style="text-align: right; padding: 12px;">
+                    <button class="btn btn-secondary item-btn" onclick="editItem('${item._id || item.id}', '${type}')">Edit</button>
+                    <button class="btn btn-danger item-btn" onclick="deleteItem('${item._id || item.id}', '${type}')">Delete</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      } else {
+        list.innerHTML = items.map(item => `
+          <div class="item-card">
+            <div class="item-header">
+              <div>
+                <div class="item-title">${item.title || item.email || 'Untitled'}</div>
+                <div class="item-meta">
+                  ${item.date ? new Date(item.date).toLocaleDateString() : ''}
+                  ${item.published !== undefined ? `<span class="badge ${item.published ? 'badge-published' : 'badge-draft'}">${item.published ? 'Published' : 'Draft'}</span>` : ''}
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn btn-secondary item-btn" onclick="editItem('${item._id || item.id}', '${type}')">Edit</button>
+                <button class="btn btn-danger item-btn" onclick="deleteItem('${item._id || item.id}', '${type}')">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // New Item
+    document.getElementById('new-btn').addEventListener('click', () => {
+      editingId = null;
+      openModal();
+    });
+
+    function getFormFields() {
+      const fields = {
+        'media': [
+          { name: 'filename', label: 'Filename', type: 'text', required: true },
+          { name: 'alt', label: 'Alt Text', type: 'text', required: true },
+          { name: 'caption', label: 'Caption', type: 'textarea' },
+        ],
+        'blog-posts': [
+          { name: 'title', label: 'Title', type: 'text', required: true },
+          { name: 'slug', label: 'Slug', type: 'text', required: true },
+          { name: 'date', label: 'Date', type: 'date', required: true },
+          { name: 'description', label: 'Description', type: 'textarea', required: true },
+          { name: 'content', label: 'Content', type: 'richtext', required: true },
+          { name: 'tags', label: 'Tags', type: 'tags' },
+          { name: 'published', label: 'Published', type: 'checkbox' }
+        ],
+        'case-studies': [
+          { name: 'title', label: 'Title', type: 'text', required: true },
+          { name: 'slug', label: 'Slug', type: 'text', required: true },
+          { name: 'client', label: 'Client', type: 'text', required: true },
+          { name: 'date', label: 'Date', type: 'date', required: true },
+          { name: 'description', label: 'Description', type: 'textarea', required: true },
+          { name: 'challenge', label: 'Challenge', type: 'richtext', required: true },
+          { name: 'solution', label: 'Solution', type: 'richtext', required: true },
+          { name: 'results', label: 'Results', type: 'richtext', required: true },
+          { name: 'content', label: 'Additional Details', type: 'richtext' },
+          { name: 'technologies', label: 'Technologies', type: 'tags' },
+          { name: 'published', label: 'Published', type: 'checkbox' }
+        ],
+        'resources': [
+          { name: 'title', label: 'Title', type: 'text', required: true },
+          { name: 'slug', label: 'Slug', type: 'text', required: true },
+          { name: 'date', label: 'Date', type: 'date', required: true },
+          { name: 'description', label: 'Description', type: 'textarea', required: true },
+          { name: 'content', label: 'Content', type: 'richtext', required: true },
+          { name: 'category', label: 'Category', type: 'select', options: ['Guide', 'Article', 'Tutorial', 'Tool'], required: true },
+          { name: 'tags', label: 'Tags', type: 'tags' },
+          { name: 'published', label: 'Published', type: 'checkbox' }
+        ]
+      };
+      return fields[currentSection] || [];
+    }
+
+    function slugify(text) {
+      return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-');
+    }
+
+    function openModal() {
+      const form = document.getElementById('editForm');
+      const fields = getFormFields();
+
+      // Set modal title based on current section
+      const sectionNames = {
+        'blog-posts': 'Blog Post',
+        'case-studies': 'Case Study',
+        'resources': 'Resource',
+        'media': 'Media'
+      };
+      const title = editingId ? `Edit ${sectionNames[currentSection]}` : `New ${sectionNames[currentSection]}`;
+      document.getElementById('modalTitle').textContent = title;
+
+      form.innerHTML = fields.map(field => {
+        let html = `<div class="form-group">`;
+
+        if (field.type === 'checkbox') {
+          html += `
+            <div class="checkbox-group">
+              <input type="checkbox" id="${field.name}" name="${field.name}">
+              <label for="${field.name}">${field.label}</label>
+            </div>
+          `;
+        } else if (field.type === 'textarea') {
+          html += `
+            <label for="${field.name}">${field.label}${field.required ? '*' : ''}</label>
+            <textarea id="${field.name}" name="${field.name}"${field.required ? ' required' : ''}></textarea>
+          `;
+        } else if (field.type === 'richtext') {
+          html += `
+            <label for="${field.name}">${field.label}${field.required ? '*' : ''}</label>
+            <div class="editor">
+              <div class="editor-toolbar">
+                <button type="button" class="editor-btn" onclick="execCommand('bold')">B</button>
+                <button type="button" class="editor-btn" onclick="execCommand('italic')">I</button>
+                <button type="button" class="editor-btn" onclick="execCommand('underline')">U</button>
+                <button type="button" class="editor-btn" onclick="execCommand('createLink', prompt('Enter URL:'))">Link</button>
+                <button type="button" class="editor-btn" onclick="execCommand('insertUnorderedList')">List</button>
+              </div>
+              <div class="editor-content" id="${field.name}" contenteditable="true"${field.required ? ' required' : ''}></div>
+            </div>
+            <input type="hidden" id="${field.name}-hidden" name="${field.name}">
+          `;
+        } else if (field.type === 'select') {
+          html += `
+            <label for="${field.name}">${field.label}${field.required ? '*' : ''}</label>
+            <select id="${field.name}" name="${field.name}"${field.required ? ' required' : ''}>
+              <option value="">Select ${field.label}</option>
+              ${field.options.map(opt => `<option value="${opt.toLowerCase()}">${opt}</option>`).join('')}
+            </select>
+          `;
+        } else if (field.type === 'tags') {
+          html += `
+            <label for="${field.name}">${field.label}</label>
+            <div class="tag-input" id="${field.name}-container">
+              <input type="text" id="${field.name}" placeholder="Add ${field.label}..." />
+            </div>
+            <input type="hidden" name="${field.name}">
+          `;
+        } else {
+          html += `
+            <label for="${field.name}">${field.label}${field.required ? '*' : ''}</label>
+            <input type="${field.type}" id="${field.name}" name="${field.name}"${field.required ? ' required' : ''}>
+          `;
+        }
+
+        html += `</div>`;
+        return html;
+      }).join('');
+
+      form.innerHTML += `
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        </div>
+      `;
+
+      form.addEventListener('submit', saveItem);
+      document.getElementById('cancelBtn').addEventListener('click', closeModal);
+
+      // Auto-populate slug from title
+      const titleField = document.getElementById('title');
+      const slugField = document.getElementById('slug');
+      if (titleField && slugField) {
+        titleField.addEventListener('input', (e) => {
+          if (!editingId) { // Only auto-populate for new items
+            slugField.value = slugify(e.target.value);
+          }
+        });
+      }
+
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+
+    async function editItem(id, type) {
+      editingId = id;
+      const endpoint = type.replace('-', '_');
+
+      try {
+        const response = await fetch(`${API_URL}/${type}/${id}`);
+        const item = await response.json();
+
+        openModal();
+        document.getElementById('modalTitle').textContent = `Edit ${type.replace('-', ' ')}`;
+
+        Object.keys(item).forEach(key => {
+          const field = document.getElementById(key);
+          if (field) {
+            if (field.type === 'checkbox') {
+              field.checked = item[key];
+            } else {
+              field.value = item[key];
+            }
+          }
+        });
+      } catch (error) {
+        showAlert('Error loading item', 'error');
+      }
+    }
+
+    async function saveItem(e) {
+      e.preventDefault();
+      const formData = new FormData(document.getElementById('editForm'));
+      const data = Object.fromEntries(formData);
+
+      // Ensure published checkbox is always included (even if unchecked)
+      if (!data.hasOwnProperty('published')) {
+        data.published = false;
+      } else {
+        data.published = data.published === 'on' ? true : false;
+      }
+
+      // Update hidden richtext fields
+      getFormFields().forEach(field => {
+        if (field.type === 'richtext') {
+          const editor = document.getElementById(field.name);
+          if (editor) {
+            data[field.name] = editor.innerHTML;
+          }
+        }
+      });
+
+      const method = editingId ? 'PUT' : 'POST';
+      const url = editingId
+        ? `${API_URL}/${currentSection}/${editingId}`
+        : `${API_URL}/${currentSection}`;
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          showAlert(`${editingId ? 'Updated' : 'Created'} successfully!`, 'success');
+          closeModal();
+          loadSection();
+        } else {
+          showAlert('Error saving item', 'error');
+        }
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    async function deleteItem(id, type) {
+      if (!confirm('Are you sure?')) return;
+
+      try {
+        const response = await fetch(`${API_URL}/${type}/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+          showAlert('Deleted successfully!', 'success');
+          loadSection();
+        } else {
+          showAlert('Error deleting item', 'error');
+        }
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+      }
+    }
+
+    function execCommand(command, value = null) {
+      document.execCommand(command, false, value);
+    }
+
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = `alert active alert-${type}`;
+      setTimeout(() => alert.classList.remove('active'), 3000);
+    }
+
+    // Load initial section
+    loadSection();
+  </script>
+</body>
+</html>

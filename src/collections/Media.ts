@@ -1,6 +1,4 @@
-import { CollectionConfig } from 'payload/types';
-
-const Media: CollectionConfig = {
+const Media = {
   slug: 'media',
   upload: {
     staticURL: '/media',

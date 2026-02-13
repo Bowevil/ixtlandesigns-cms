@@ -1,6 +1,4 @@
-import { CollectionConfig } from 'payload/types';
-
-const BlogPosts: CollectionConfig = {
+const BlogPosts = {
   slug: 'blog-posts',
   admin: {
     useAsTitle: 'title',
@@ -49,6 +47,7 @@ const BlogPosts: CollectionConfig = {
       name: 'content',
       type: 'richText',
       required: true,
+      editor: 'lexical',
     },
     {
       name: 'tags',

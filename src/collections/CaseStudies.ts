@@ -1,6 +1,4 @@
-import { CollectionConfig } from 'payload/types';
-
-const CaseStudies: CollectionConfig = {
+const CaseStudies = {
   slug: 'case-studies',
   admin: {
     useAsTitle: 'title',
@@ -53,6 +51,7 @@ const CaseStudies: CollectionConfig = {
       name: 'challenge',
       type: 'richText',
       required: true,
+      editor: 'lexical',
       admin: {
         description: 'The challenge or problem the client faced',
       },
@@ -61,6 +60,7 @@ const CaseStudies: CollectionConfig = {
       name: 'solution',
       type: 'richText',
       required: true,
+      editor: 'lexical',
       admin: {
         description: 'How we solved it',
       },
@@ -69,6 +69,7 @@ const CaseStudies: CollectionConfig = {
       name: 'results',
       type: 'richText',
       required: true,
+      editor: 'lexical',
       admin: {
         description: 'The outcomes and impact',
       },
@@ -76,6 +77,7 @@ const CaseStudies: CollectionConfig = {
     {
       name: 'content',
       type: 'richText',
+      editor: 'lexical',
       admin: {
         description: 'Additional case study details',
       },

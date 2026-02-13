@@ -1,6 +1,4 @@
-import { CollectionConfig } from 'payload/types';
-
-const Resources: CollectionConfig = {
+const Resources = {
   slug: 'resources',
   admin: {
     useAsTitle: 'title',
@@ -48,6 +46,7 @@ const Resources: CollectionConfig = {
       name: 'content',
       type: 'richText',
       required: true,
+      editor: 'lexical',
     },
     {
       name: 'category',

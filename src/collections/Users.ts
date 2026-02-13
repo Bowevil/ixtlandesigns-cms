@@ -1,6 +1,4 @@
-import { CollectionConfig } from 'payload/types';
-
-const Users: CollectionConfig = {
+const Users = {
   slug: 'users',
   auth: true,
   admin: {
