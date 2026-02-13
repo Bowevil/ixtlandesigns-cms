@@ -822,7 +822,8 @@
       }
 
       // Update hidden richtext fields
-      getFormFields().forEach(field => {
+      const fields = getFormFields();
+      fields.forEach(field => {
         if (field.type === 'richtext') {
           const editor = document.getElementById(field.name);
           if (editor) {
@@ -830,6 +831,16 @@
           }
         }
       });
+
+      // Validate required text fields
+      for (const field of fields) {
+        if (field.required && (field.type === 'text' || field.type === 'textarea' || field.type === 'select')) {
+          if (!data[field.name]) {
+            showAlert(`${field.label} is required`, 'error');
+            return;
+          }
+        }
+      }
 
       const method = editingId ? 'PUT' : 'POST';
       const url = editingId
