@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/express-cms.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/admin",
+      "dest": "/src/express-cms.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/express-cms.js"
+    }
+  ]
+}
