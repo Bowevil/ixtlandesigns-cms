@@ -2,7 +2,9 @@ import express from 'express';
 import { MongoClient, ObjectId } from 'mongodb';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '.env.local' });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,9 +17,21 @@ const DATABASE_URI = process.env.DATABASE_URI || 'mongodb://localhost/ixtlan-cms
 app.use(express.json());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   next();
 });
+
+// Authentication middleware for write operations
+const requireAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(' ')[1];
+  const expectedToken = process.env.PAYLOAD_SECRET;
+
+  if (!token || token !== expectedToken) {
+    return res.status(401).json({ error: 'Authentication required. Provide Authorization: Bearer token' });
+  }
+  next();
+};
 
 // Serve Admin Dashboard (MUST be before static middleware)
 app.get('/admin', (req, res) => {
@@ -63,7 +77,7 @@ app.get('/api/blog-posts', async (req, res) => {
   }
 });
 
-app.post('/api/blog-posts', async (req, res) => {
+app.post('/api/blog-posts', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('blog-posts').insertOne({
       ...req.body,
@@ -107,7 +121,7 @@ app.get('/api/resources', async (req, res) => {
 
 // Serve Admin Dashboard
 // Update blog post
-app.put('/api/blog-posts/:id', async (req, res) => {
+app.put('/api/blog-posts/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('blog-posts').updateOne(
       { _id: new ObjectId(req.params.id) },
@@ -120,7 +134,7 @@ app.put('/api/blog-posts/:id', async (req, res) => {
 });
 
 // Delete blog post
-app.delete('/api/blog-posts/:id', async (req, res) => {
+app.delete('/api/blog-posts/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('blog-posts').deleteOne(
       { _id: new ObjectId(req.params.id) }
@@ -144,7 +158,7 @@ app.get('/api/blog-posts/:id', async (req, res) => {
 });
 
 // Case Studies endpoints
-app.put('/api/case-studies/:id', async (req, res) => {
+app.put('/api/case-studies/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('case-studies').updateOne(
       { _id: new ObjectId(req.params.id) },
@@ -156,7 +170,7 @@ app.put('/api/case-studies/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/case-studies/:id', async (req, res) => {
+app.delete('/api/case-studies/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('case-studies').deleteOne(
       { _id: new ObjectId(req.params.id) }
@@ -178,7 +192,7 @@ app.get('/api/case-studies/:id', async (req, res) => {
   }
 });
 
-app.post('/api/case-studies', async (req, res) => {
+app.post('/api/case-studies', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('case-studies').insertOne({
       ...req.body,
@@ -191,7 +205,7 @@ app.post('/api/case-studies', async (req, res) => {
 });
 
 // Resources endpoints
-app.put('/api/resources/:id', async (req, res) => {
+app.put('/api/resources/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('resources').updateOne(
       { _id: new ObjectId(req.params.id) },
@@ -203,7 +217,7 @@ app.put('/api/resources/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/resources/:id', async (req, res) => {
+app.delete('/api/resources/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('resources').deleteOne(
       { _id: new ObjectId(req.params.id) }
@@ -225,7 +239,7 @@ app.get('/api/resources/:id', async (req, res) => {
   }
 });
 
-app.post('/api/resources', async (req, res) => {
+app.post('/api/resources', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('resources').insertOne({
       ...req.body,
@@ -251,7 +265,7 @@ app.get('/api/media', async (req, res) => {
   }
 });
 
-app.post('/api/media', async (req, res) => {
+app.post('/api/media', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('media').insertOne({
       ...req.body,
@@ -263,7 +277,7 @@ app.post('/api/media', async (req, res) => {
   }
 });
 
-app.put('/api/media/:id', async (req, res) => {
+app.put('/api/media/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('media').updateOne(
       { _id: new ObjectId(req.params.id) },
@@ -275,7 +289,7 @@ app.put('/api/media/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/media/:id', async (req, res) => {
+app.delete('/api/media/:id', requireAuth, async (req, res) => {
   try {
     const result = await db.collection('media').deleteOne(
       { _id: new ObjectId(req.params.id) }
